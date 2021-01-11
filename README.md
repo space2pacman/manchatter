@@ -2,4 +2,4 @@
 
 WebSocket chat with rooms
 
-![GitHub Logo](/screenshots/pacman-chat.gif);
+![GitHub Logo](/screenshots/pacman-chat.gif)
