@@ -203,11 +203,14 @@ io.on("connection", socket => {
 			data: null
 		}
 
-		payload.status = "success";
-		payload.data = rooms.addMessage(user.id, user.roomId, response.text);
-		room.users.forEach(user => {
-			user.socket.emit("message:received", payload);
-		});
+		if(user.roomId) {
+			payload.status = "success";
+			payload.data = rooms.addMessage(user.id, user.roomId, response.text);
+			room.users.forEach(user => {
+				user.socket.emit("message:received", payload);
+			});
+		}
+
 	});
 
 	function roomLeave(user) {

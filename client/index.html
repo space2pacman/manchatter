@@ -100,7 +100,7 @@
 
 	<template id="message">
 		<form class="input-group" @submit.prevent="sendMessage">
-			<input type="text" class="form-control" placeholder="Enter message" v-model="text">
+			<input type="text" class="form-control" placeholder="Enter message" v-model="text" :disabled="$root.room.id === null">
 			<div class="input-group-append">
 				<button class="btn btn-primary" type="button" @click="sendMessage">
 					<i class="fas fa-paper-plane"></i>
