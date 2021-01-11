@@ -6,7 +6,7 @@ WebSocket chat with rooms
 npm i
 node server
 ```
-default address: localhost
+default address: localhost  
 config: utils/config.js
 
 ![GitHub Logo](/screenshots/pacman-chat.gif);
