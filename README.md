@@ -9,4 +9,4 @@ node server
 default address: localhost  
 config: utils/config.js
 
-![GitHub Logo](/screenshots/pacman-chat.gif);
+![GitHub Logo](/screenshots/pacman-chat.gif)
