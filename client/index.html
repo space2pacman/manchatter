@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="/public/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/public/css/bootstrap-vue.min.css">
+	<link rel="stylesheet" href="/public/css/main.css">
+	<title>Pacman chat</title>
+</head>
+<body>
+	<div id="app" class="container">
+		<Auth v-if="!isAuth"></Auth>
+		<Chat v-if="isAuth"></Chat>
+	</div>
+
+	<template id="auth">
+		<form class="form-signin">
+			<div class="card w-100">
+				<div class="card-body">
+					<div class="text-center">
+						<i class="logo fas fa-comments"></i>
+						<input type="text" class="form-control mb-2" :class="{ 'is-invalid': $root.user.login.invalid }" placeholder="Login" v-model="$root.user.login.value">
+						<div class="invalid-feedback mb-2">{{ $root.translate($root.user.login.status) }}</div>
+						<button class="btn btn-primary btn-block" type="submit" @click.prevent="$root.auth">Enter</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</template>
+
+	<template id="chat">
+		<div class="d-flex flex-column vh-100">
+			<div class="card h-100">
+				<Navbar></Navbar>
+				<div class="card-body d-flex chat__column">
+					<Rooms></Rooms>
+					<Messages></Messages>
+				</div>
+			</div>
+			<Message></Message>
+		</div>
+	</template>
+
+	<template id="navbar">
+		<div class="navbar border-bottom">
+			<div v-if="$root.room.id !== null" class="btn-group btn-group-sm">
+				<div class="btn btn-primary navbar__caption">
+					{{ $root.room.name }}
+					<i class="far fa-times-circle navbar__button-close" @click="$root.roomLeave"></i>
+				</div>
+				<div class="btn btn-primary navbar__caption">Online: {{ $root.room.online }}</div>
+			</div>
+			<div v-else></div>
+			<div>
+				<span class="text-secondary mr-3">{{ $root.user.login.value }}</span>
+				<button type="button" class="btn btn-secondary btn-sm mr-2" title="add room" :disabled="$root.room.id !== null" @click="roomAdd">
+					<i class="fas fa-plus-square"></i>
+				</button>
+				<button type="button" class="btn btn-secondary btn-sm" title="logout" @click="logout">
+					<i class="fas fa-sign-out-alt"></i>
+				</button>
+			</div>
+
+			<b-modal id="room-add" title="Add room" @ok="onModalRoomAdd($event)">
+				<form @submit="onModalRoomAdd($event)">
+					<input type="text" class="form-control mb-2" :class="{ 'is-invalid': room.invalid }" placeholder="Room name" v-model="room.name">
+					<div class="text-center invalid-feedback">{{ $root.translate(room.status) }}</div>
+				</form>
+			</b-modal>
+		</div>
+	</template>
+
+	<template id="rooms">
+		<div class="overflow-auto border-right rooms__list">
+			<div v-for="room in $root.rooms">
+				<button type="button" class="btn text-truncate ml-1 mb-2 room__name" :class="$root.room.name === room.name ? 'btn-success' : 'btn-info'" :title="room.name" @click="$root.roomJoin(room)">
+					<span class="badge badge-light">{{ room.online }}</span>
+					{{ room.name }}
+				</button>
+			</div>
+			<div v-if="$root.rooms === null" class="text-truncate m-1 room__name" title="Комнаты отсутствуют">Комнаты отсутствуют</div>
+		</div>
+	</template>
+
+	<template id="messages">
+		<div class="overflow-auto chat__messages" ref="chat-messages">
+			<div v-for="message in $root.room.messages">
+				<div :class="$root.user.login.value === message.login ? 'text-right' : 'text-left'">
+					<div class="d-inline-block text-left alert" :class="$root.user.login.value === message.login ? 'alert-success' : 'alert-primary'">
+						<div class="font-weight-bold">{{ message.login }}</div>
+						{{ message.text }}
+					</div>
+				</div>
+			</div>
+			<div v-if="$root.room.id === null" class="text-center text-secondary">Выберите чат для обмена сообщениями</div>
+		</div>
+	</template>
+
+	<template id="message">
+		<form class="input-group" @submit.prevent="sendMessage">
+			<input type="text" class="form-control" placeholder="Enter message" v-model="text">
+			<div class="input-group-append">
+				<button class="btn btn-primary" type="button" @click="sendMessage">
+					<i class="fas fa-paper-plane"></i>
+				</button>
+			</div>
+		</form>
+	</template>
+
+	<script src="/public/js/vue.min.js"></script>
+	<script src="/public/js/socket.io.min.js"></script>
+	<script src="/public/js/bootstrap-vue.min.js"></script>
+	<script src="/public/js/main.js"></script>
+</body>
+</html>

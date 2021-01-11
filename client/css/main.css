@@ -1,0 +1,58 @@
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+    margin-top: 120px;
+}
+
+.logo {
+    font-size: 60px;
+    opacity: 0.4;
+    margin-bottom: 20px;
+}
+
+.navbar {
+    padding: 1.5rem 0rem;
+    margin: 0 1.5rem;
+}
+
+.navbar__caption {
+    background: none;
+    color: #000;
+}
+
+.navbar__caption:hover, .navbar__caption:active, .navbar__caption:focus {
+    box-shadow: none !important;
+    background: none !important;
+    color: #000 !important;
+    border-color: #007bff !important;
+}
+
+.navbar__button-close {
+    cursor: pointer;
+}
+
+.chat__column {
+    height: calc(100vh - 150px);
+}
+
+.chat__messages {
+    flex: 1;
+    padding-left: 20px;
+    padding-right: 4px;
+}
+
+.rooms__list {
+    padding-right: 20px;
+}
+
+.room__name {
+    width: 150px;
+    text-align: left;
+}
+
+.btn:focus,.btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
