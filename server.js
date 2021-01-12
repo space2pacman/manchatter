@@ -210,7 +210,6 @@ io.on("connection", socket => {
 				user.socket.emit("message:received", payload);
 			});
 		}
-
 	});
 
 	function roomLeave(user) {
