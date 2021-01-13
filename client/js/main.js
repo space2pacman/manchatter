@@ -296,6 +296,10 @@ let app = new Vue({
 					this.roomRefresh();
 				}
 			}
+
+			if(response.status === "failed") {
+				this.setHash();
+			}
 		},
 		onRoomLeft(response) {
 			if(response.status === "success") {
@@ -323,6 +327,17 @@ let app = new Vue({
 			}
 
 		},
+		onCheckUserId(response) {
+			if(response.status === "success") {
+				this.user.id = response.data.userId;
+				this.user.login.value = response.data.login;
+				this.connect();
+			}
+
+			if(response.status === "failed") {
+				this.clearLocalStorage();
+			}
+		},
 		setHash(hash) {
 			if(hash) {
 				window.location.hash = `#${hash}`;
@@ -335,6 +350,15 @@ let app = new Vue({
 
 			if(chatId) {
 				this.roomJoin(chatId);
+			}
+		},
+		checkUserId() {
+			let payload = {
+				userId: this.getLocalStorage("userId")
+			}
+
+			if(payload.userId) {
+				this.request("user/check-id", payload).then(this.onCheckUserId);
 			}
 		},
 		setLocalStorage(key, value) {
@@ -387,25 +411,7 @@ let app = new Vue({
 	},
 	mounted() {
 		this.startUpdate();
-
+		this.checkUserId();
 		window.addEventListener("hashchange", this.onHashChange);
-
-		let payload = {
-			userId: this.getLocalStorage("userId")
-		}
-
-		if(payload.userId) {
-			this.request("check-id", payload).then(response => {
-				if(response.status === "success") {
-					this.user.id = payload.userId;
-					this.user.login.value = response.data.login;
-					this.connect();
-				}
-
-				if(response.status === "failed") {
-					this.clearLocalStorage();
-				}
-			});
-		}
 	}
 })

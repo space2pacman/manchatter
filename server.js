@@ -20,7 +20,7 @@ app.get("/", (request, response) => {
 	})
 })
 
-app.post("/check-id", (request, response) => {
+app.post("/user/check-id", (request, response) => {
 	let user = users.find("id", request.body.userId);
 	let payload = {
 		status: null,
@@ -31,7 +31,8 @@ app.post("/check-id", (request, response) => {
 	if(user) {
 		payload.status = "success";
 		payload.data = {
-			login: user.login
+			login: user.login,
+			userId: user.id
 		}
 		response.status(200).send(payload);
 	} else {
@@ -167,6 +168,7 @@ io.on("connection", socket => {
 
 	socket.on("room:join", response => {
 		let user = users.find("id", response.userId);
+		let room = rooms.find("id", response.roomId);
 		let payload = {
 			status: null,
 			message: null,
@@ -177,21 +179,25 @@ io.on("connection", socket => {
 			roomLeave(user);
 		}
 
-		let room = rooms.join(user.id, response.roomId);
-
-		user.roomId = response.roomId;
-		payload.status = "success";
-		payload.data = {
-			login: user.login,
-			id: room.id,
-			name: room.name,
-			messages: room.messages,
-			online: room.users.length
-		}
-
-		room.users.forEach(user => {
+		if(room) {
+			rooms.join(user.id, room.id);
+			user.roomId = room.id;
+			payload.status = "success";
+			payload.data = {
+				login: user.login,
+				id: room.id,
+				name: room.name,
+				messages: room.messages,
+				online: room.users.length
+			}
+			room.users.forEach(user => {
+				user.socket.emit("room:joined", payload);
+			});
+		} else {
+			payload.status = "failed";
+			payload.message = "room not found";
 			user.socket.emit("room:joined", payload);
-		});
+		}
 	});
 
 	socket.on("room:leave", response => {
