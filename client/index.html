@@ -75,7 +75,7 @@
 	<template id="rooms">
 		<div class="overflow-auto border-right rooms__list">
 			<div v-for="room in $root.rooms">
-				<button type="button" class="btn text-truncate ml-1 mb-2 room__name" :class="$root.room.name === room.name ? 'btn-success' : 'btn-info'" :title="room.name" @click="$root.roomJoin(room)">
+				<button type="button" class="btn text-truncate ml-1 mb-2 room__name" :class="$root.room.name === room.name ? 'btn-success' : 'btn-info'" :title="room.name" @click="$root.roomJoin(room.id)">
 					<span class="badge badge-light">{{ room.online }}</span>
 					{{ room.name }}
 				</button>

@@ -123,8 +123,10 @@ Vue.component("message", {
 let app = new Vue({
 	el: "#app",
 	data: {
+		app: "chat",
 		isAuth: false,
 		socket: null,
+		timer: null,
 		room: {
 			id: null,
 			name: null,
@@ -190,10 +192,10 @@ let app = new Vue({
 			this.socket.on("room:left", this.onRoomLeft);
 			this.socket.on("message:received", this.onMessageReceived);
 		},
-		roomJoin(room) {
+		roomJoin(roomId) {
 			let payload = {
 				userId: this.user.id,
-				roomId: room.id
+				roomId
 			}
 
 			this.socket.emit("room:join", payload);
@@ -222,7 +224,9 @@ let app = new Vue({
 			if(response.status === "success") {
 				this.user.login.status = "";
 				this.user.login.invalid = false;
-				this.user.id = response.user.id;
+				this.user.id = response.data.userId;
+				this.user.login.value = response.data.login;
+				this.setLocalStorage("userId", this.user.id);
 				this.connect();
 			}
 
@@ -235,6 +239,7 @@ let app = new Vue({
 			if(response.status === "success") {
 				this.isAuth = true;
 				this.roomUpdate();
+				this.checkHash();
 			}
 
 			if(response.status === "failed") {
@@ -250,6 +255,9 @@ let app = new Vue({
 				this.room.messages = null;
 				this.room.online = null;
 				this.user.login.value = "";
+				this.clearLocalStorage();
+				this.setHash();
+				this.stopUpdate();
 			}
 
 			if(response.status === "failed") {
@@ -259,7 +267,7 @@ let app = new Vue({
 		onRoomAdded(response) {
 			if(response.status === "success") {
 				if(response.data.login === this.user.login.value) {
-					this.roomJoin(response.data.room);
+					this.roomJoin(response.data.room.id);
 				}
 
 				this.roomUpdate();
@@ -282,6 +290,8 @@ let app = new Vue({
 					this.room.name = response.data.name;
 					this.room.messages = response.data.messages;
 					this.room.online = response.data.online;
+					this.setHash(this.room.id);
+					this.roomUpdate();
 				} else {
 					this.roomRefresh();
 				}
@@ -294,6 +304,7 @@ let app = new Vue({
 					this.room.name = null;
 					this.room.messages = null;
 					this.room.online = null;
+					this.setHash();
 				} else {
 					this.roomRefresh();
 				}
@@ -303,6 +314,64 @@ let app = new Vue({
 			if(response.status === "success") {
 				this.room.messages.push(response.data);
 			}
+		},
+		onHashChange(event) {
+			let chatId = window.location.hash.slice(1);
+
+			if(chatId) {
+				this.roomJoin(chatId);
+			}
+
+		},
+		setHash(hash) {
+			if(hash) {
+				window.location.hash = `#${hash}`;
+			} else {
+				window.location.hash = "";
+			}
+		},
+		checkHash() {
+			let chatId = window.location.hash.slice(1);
+
+			if(chatId) {
+				this.roomJoin(chatId);
+			}
+		},
+		setLocalStorage(key, value) {
+			let payload;
+
+			if(localStorage[this.app]) {
+				payload = JSON.parse(localStorage[this.app]);
+			} else {
+				payload = {};
+			}
+
+			payload[key] = value;
+			localStorage[this.app] = JSON.stringify(payload);
+		},
+		getLocalStorage(key) {
+			if(localStorage[this.app]) {
+				let data = JSON.parse(localStorage[this.app]);
+
+				if(data[key]) {
+					return data[key];
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		},
+		clearLocalStorage() {
+			delete localStorage[this.app];
+		},
+		startUpdate() {
+			this.timer = setInterval(() => {
+				this.roomUpdate();
+			}, 1000);
+		},
+		stopUpdate() {
+			clearInterval(this.timer);
 		},
 		translate(message) {
 			let messages = {
@@ -317,8 +386,26 @@ let app = new Vue({
 		}
 	},
 	mounted() {
-		setInterval(() => {
-			this.roomUpdate();
-		}, 1000);
+		this.startUpdate();
+
+		window.addEventListener("hashchange", this.onHashChange);
+
+		let payload = {
+			userId: this.getLocalStorage("userId")
+		}
+
+		if(payload.userId) {
+			this.request("check-id", payload).then(response => {
+				if(response.status === "success") {
+					this.user.id = payload.userId;
+					this.user.login.value = response.data.login;
+					this.connect();
+				}
+
+				if(response.status === "failed") {
+					this.clearLocalStorage();
+				}
+			});
+		}
 	}
 })
