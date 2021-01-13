@@ -113,8 +113,10 @@ Vue.component("message", {
 				text: this.text
 			}
 
-			this.text = "";
-			this.$root.socket.emit("message:send", payload);
+			if(payload.text.length > 0) {
+				this.text = "";
+				this.$root.socket.emit("message:send", payload);
+			}
 		}
 	},
 	template: "#message"
@@ -309,6 +311,7 @@ let app = new Vue({
 					this.room.messages = null;
 					this.room.online = null;
 					this.setHash();
+					this.roomUpdate();
 				} else {
 					this.roomRefresh();
 				}
