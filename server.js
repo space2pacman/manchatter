@@ -239,24 +239,24 @@ io.on("connection", socket => {
 			});
 		}
 	});
-
-	function roomLeave(user) {
-		let room = rooms.leave(user.id, user.roomId);
-		let payload = {
-			status: null,
-			message: null,
-			data: null
-		}
-
-		payload.status = "success";
-		payload.data = {
-			login: user.login
-		}
-
-		room.users.forEach(user => {
-			user.socket.emit("room:left", payload);
-		});
-	}
 });
+
+function roomLeave(user) {
+	let room = rooms.leave(user.id, user.roomId);
+	let payload = {
+		status: null,
+		message: null,
+		data: null
+	}
+
+	payload.status = "success";
+	payload.data = {
+		login: user.login
+	}
+
+	room.users.forEach(user => {
+		user.socket.emit("room:left", payload);
+	});
+}
 
 app.listen(config.port.http, () => console.log(`Server listen on port: ${config.port.http}`));
