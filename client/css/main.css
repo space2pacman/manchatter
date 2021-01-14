@@ -39,17 +39,22 @@
 
 .chat__messages {
     flex: 1;
-    padding-left: 20px;
-    padding-right: 4px;
+    padding: 0 20px;
 }
 
-.rooms__list {
+.rooms {
     padding-right: 20px;
 }
 
 .room__name {
     width: 150px;
     text-align: left;
+}
+
+.users {
+    padding-left: 20px;
+    margin-right: 5px;
+    width: 175px;
 }
 
 .btn:focus,.btn:active {

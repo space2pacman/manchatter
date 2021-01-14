@@ -160,7 +160,8 @@ io.on("connection", socket => {
 
 		payload.status = "success";
 		payload.data = {
-			online: room.users.length
+			online: room.users.length,
+			users: room.users.map(user => user.login)
 		}
 
 		socket.emit("room:refreshed", payload);
@@ -189,7 +190,8 @@ io.on("connection", socket => {
 				name: room.name,
 				status: room.status,
 				messages: room.messages,
-				online: room.users.length
+				online: room.users.length,
+				users: room.users.map(user => user.login)
 			}
 			room.users.forEach(user => {
 				user.socket.emit("room:joined", payload);

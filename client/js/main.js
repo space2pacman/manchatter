@@ -111,6 +111,10 @@ Vue.component("messages", {
 	template: "#messages"
 });
 
+Vue.component("users", {
+	template: "#users"
+});
+
 Vue.component("message", {
 	data() {
 		return {
@@ -144,6 +148,7 @@ let app = new Vue({
 			id: null,
 			name: null,
 			online: null,
+			users: null,
 			messages: []
 		},
 		rooms: null,
@@ -268,6 +273,7 @@ let app = new Vue({
 				this.room.status = null;
 				this.room.messages = null;
 				this.room.online = null;
+				this.room.users = null;
 				this.user.login.value = "";
 				this.clearLocalStorage();
 				this.setHash();
@@ -295,6 +301,7 @@ let app = new Vue({
 		onRoomRefreshed(response) {
 			if(response.status === "success") {
 				this.room.online = response.data.online;
+				this.room.users = response.data.users;
 			}
 		},
 		onRoomJoined(response) {
@@ -305,6 +312,7 @@ let app = new Vue({
 					this.room.status = response.data.status;
 					this.room.messages = response.data.messages;
 					this.room.online = response.data.online;
+					this.room.users = response.data.users;
 					this.setHash(this.room.id);
 					this.roomUpdate();
 				} else {
@@ -324,6 +332,7 @@ let app = new Vue({
 					this.room.status = null;
 					this.room.messages = null;
 					this.room.online = null;
+					this.room.users = null;
 					this.setHash();
 					this.roomUpdate();
 				} else {
