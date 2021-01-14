@@ -128,7 +128,7 @@ io.on("connection", socket => {
 			payload.status = "success";
 			payload.data = {
 				login: user.login,
-				room: rooms.add(response.name)
+				room: rooms.add(response.name, response.status)
 			};
 		} else {
 			payload.status = "failed";
@@ -146,7 +146,7 @@ io.on("connection", socket => {
 		}
 
 		payload.status = "success";
-		payload.data = rooms.getAll();
+		payload.data = rooms.getAll("public");
 		socket.emit("room:updated", payload);
 	});
 
@@ -187,6 +187,7 @@ io.on("connection", socket => {
 				login: user.login,
 				id: room.id,
 				name: room.name,
+				status: room.status,
 				messages: room.messages,
 				online: room.users.length
 			}

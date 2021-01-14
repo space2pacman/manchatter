@@ -8,10 +8,11 @@ class Rooms {
 		this._init();
 	}
 
-	add(name) {
+	add(name, status) {
 		let room = {
 			id: uuid.v4(),
 			name,
+			status: status || "public",
 			users: [],
 			messages: []
 		}
@@ -63,13 +64,15 @@ class Rooms {
 		return this._rooms[roomId].messages[this._rooms[roomId].messages.length - 1];
 	}
 
-	getAll() {
+	getAll(status) {
 		let rooms = [];
 
 		for(let id in this._rooms) {
 			let room = this._rooms[id];
 
-			rooms.push({ id: room.id, name: room.name, online: room.users.length });
+			if(room.status === status) {
+				rooms.push({ id: room.id, name: room.name, status: room.status, online: room.users.length });
+			}
 		}
 
 		return rooms.length > 0 ? rooms : null;

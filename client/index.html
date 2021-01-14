@@ -47,10 +47,13 @@
 		<div class="navbar border-bottom">
 			<div v-if="$root.room.id !== null" class="btn-group btn-group-sm">
 				<div class="btn btn-primary navbar__caption">
+					<span class="badge mr-1" :class="getRoomBadge($root.room.status)">{{ $root.room.status }}</span>
 					{{ $root.room.name }}
-					<i class="far fa-times-circle navbar__button-close" @click="$root.roomLeave"></i>
 				</div>
 				<div class="btn btn-primary navbar__caption">Online: {{ $root.room.online }}</div>
+				<div class="btn btn-primary navbar__caption">
+					<i class="far fa-times-circle navbar__button-close" @click="$root.roomLeave"></i>
+				</div>
 			</div>
 			<div v-else></div>
 			<div>
@@ -65,8 +68,18 @@
 
 			<b-modal id="room-add" title="Add room" @ok="onModalRoomAdd($event)">
 				<form @submit="onModalRoomAdd($event)">
-					<input type="text" class="form-control mb-2" :class="{ 'is-invalid': room.invalid }" placeholder="Room name" v-model="room.name">
-					<div class="text-center invalid-feedback">{{ $root.translate(room.status) }}</div>
+					<input type="text" class="form-control mb-3" :class="{ 'is-invalid': room.invalid }" placeholder="Room name" v-model="room.name">
+					<div class="btn-group btn-group-toggle d-flex">
+						<label class="btn btn-info" :class="{ 'active': room.status === 'public' }">
+							<input name="type" type="radio" value="public" class="custom-control-input" v-model="room.status">
+							Public
+						</label>
+						<label class="btn btn-info" :class="{ 'active': room.status === 'privat' }">
+							<input name="type" type="radio" value="privat" class="custom-control-input" v-model="room.status">
+							Privat
+						</label>
+					</div>
+					<div class="text-center invalid-feedback">{{ $root.translate(room.text) }}</div>
 				</form>
 			</b-modal>
 		</div>
@@ -76,7 +89,7 @@
 		<div class="overflow-auto border-right rooms__list">
 			<div v-for="room in $root.rooms">
 				<button type="button" class="btn text-truncate ml-1 mb-2 room__name" :class="$root.room.name === room.name ? 'btn-success' : 'btn-info'" :title="room.name" @click="$root.roomJoin(room.id)">
-					<span class="badge badge-light">{{ room.online }}</span>
+					<span class="badge badge-light mr-1">{{ room.online }}</span>
 					{{ room.name }}
 				</button>
 			</div>

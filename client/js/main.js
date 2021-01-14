@@ -11,7 +11,8 @@ Vue.component("navbar", {
 		return {
 			room: {
 				name: "",
-				status: "",
+				text: "",
+				status: "public",
 				invalid: false
 			}
 		}
@@ -20,14 +21,24 @@ Vue.component("navbar", {
 		roomAdd() {
 			if(this.$root.room.id === null) {
 				this.room.name = "";
-				this.room.status = "";
+				this.room.text = "";
+				this.room.status = "public";
 				this.room.invalid = false;
 				this.$bvModal.show("room-add");
+			}
+		},
+		getRoomBadge(status) {
+			switch(status) {
+				case "public":
+					return "badge-success"
+				case "privat":
+					return "badge-danger";
 			}
 		},
 		onModalRoomAdd(event) {
 			let payload = {
 				name: this.room.name,
+				status: this.room.status,
 				userId: this.$root.user.id
 			}
 
@@ -35,7 +46,7 @@ Vue.component("navbar", {
 
 			if(payload.name.length === 0) {
 				this.room.invalid = true;
-				this.room.status = "Название должно состоять минимум из 1-ого символа";
+				this.room.text = "Название должно состоять минимум из 1-ого символа";
 			} else {
 				this.$root.socket.emit("room:add", payload);
 			}
@@ -43,14 +54,14 @@ Vue.component("navbar", {
 		},
 		onRoomAdded(response) {
 			if(response.status === "success") {
-				this.room.status = "";
+				this.room.text = "";
 				this.room.invalid = false;
 				this.$bvModal.hide("room-add");
 			}
 
 			if(response.status === "failed") {
 				this.room.invalid = true;
-				this.room.status = response.message;
+				this.room.text = response.message;
 			}
 		},
 		logout() {
@@ -63,7 +74,7 @@ Vue.component("navbar", {
 	},
 	watch: {
 		"room.name"() {
-			this.room.status = "";
+			this.room.text = "";
 			this.room.invalid = false;
 		}
 	},
@@ -254,6 +265,7 @@ let app = new Vue({
 				this.user.id = null;
 				this.room.id = null;
 				this.room.name = null;
+				this.room.status = null;
 				this.room.messages = null;
 				this.room.online = null;
 				this.user.login.value = "";
@@ -290,6 +302,7 @@ let app = new Vue({
 				if(response.data.login === this.user.login.value) {
 					this.room.id = response.data.id;
 					this.room.name = response.data.name;
+					this.room.status = response.data.status;
 					this.room.messages = response.data.messages;
 					this.room.online = response.data.online;
 					this.setHash(this.room.id);
@@ -308,6 +321,7 @@ let app = new Vue({
 				if(response.data.login === this.user.login.value) {
 					this.room.id = null;
 					this.room.name = null;
+					this.room.status = null;
 					this.room.messages = null;
 					this.room.online = null;
 					this.setHash();
