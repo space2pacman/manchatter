@@ -52,7 +52,7 @@
 					{{ $root.room.name }}
 				</div>
 				<div class="btn border border-primary">Online: {{ $root.room.online }}</div>
-				<div class="btn border border-primary bg-primary text-white navbar__button-close" @click="$root.roomLeave">
+				<div class="btn border border-primary bg-primary text-white cursor-pointer" @click="$root.roomLeave">
 					<i class="far fa-times-circle"></i>
 				</div>
 			</div>
@@ -71,11 +71,11 @@
 				<form @submit="onModalRoomAdd($event)">
 					<input type="text" class="form-control mb-3" :class="{ 'is-invalid': room.invalid }" placeholder="Room name" v-model="room.name">
 					<div class="btn-group btn-group-toggle d-flex">
-						<label class="btn btn-info" :class="{ 'active': room.status === 'public' }">
+						<label class="btn btn-info cursor-pointer" :class="{ 'active': room.status === 'public' }">
 							<input name="type" type="radio" value="public" class="custom-control-input" v-model="room.status">
 							Public
 						</label>
-						<label class="btn btn-info" :class="{ 'active': room.status === 'privat' }">
+						<label class="btn btn-info cursor-pointer" :class="{ 'active': room.status === 'privat' }">
 							<input name="type" type="radio" value="privat" class="custom-control-input" v-model="room.status">
 							Privat
 						</label>
