@@ -52,8 +52,8 @@
 					{{ $root.room.name }}
 				</div>
 				<div class="btn border border-primary">Online: {{ $root.room.online }}</div>
-				<div class="btn border border-primary bg-primary text-white">
-					<i class="far fa-times-circle navbar__button-close" @click="$root.roomLeave"></i>
+				<div class="btn border border-primary bg-primary text-white navbar__button-close" @click="$root.roomLeave">
+					<i class="far fa-times-circle"></i>
 				</div>
 			</div>
 			<div v-else></div>
