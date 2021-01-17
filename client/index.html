@@ -32,7 +32,7 @@
 
 	<template id="chat">
 		<div class="d-flex flex-column vh-100">
-			<div class="card h-100">
+			<div class="card h-100 border-bottom-0 chat__window">
 				<Navbar></Navbar>
 				<div class="card-body d-flex chat__column">
 					<Rooms></Rooms>
@@ -47,12 +47,12 @@
 	<template id="navbar">
 		<div class="navbar border-bottom">
 			<div v-if="$root.room.id !== null" class="btn-group btn-group-sm">
-				<div class="btn btn-primary navbar__caption">
+				<div class="btn border border-primary">
 					<span class="badge mr-1" :class="getRoomBadge($root.room.status)">{{ $root.room.status }}</span>
 					{{ $root.room.name }}
 				</div>
-				<div class="btn btn-primary navbar__caption">Online: {{ $root.room.online }}</div>
-				<div class="btn btn-primary navbar__caption">
+				<div class="btn border border-primary">Online: {{ $root.room.online }}</div>
+				<div class="btn border border-primary bg-primary text-white">
 					<i class="far fa-times-circle navbar__button-close" @click="$root.roomLeave"></i>
 				</div>
 			</div>
@@ -120,9 +120,9 @@
 
 	<template id="message">
 		<form class="input-group" @submit.prevent="sendMessage">
-			<input type="text" class="form-control" placeholder="Enter message" v-model="text" :disabled="$root.room.id === null">
+			<input type="text" class="form-control message__input" placeholder="Enter message" v-model="text" :disabled="$root.room.id === null">
 			<div class="input-group-append">
-				<button class="btn btn-primary" type="button" @click="sendMessage">
+				<button class="btn btn-primary message__button" type="button" @click="sendMessage">
 					<i class="fas fa-paper-plane"></i>
 				</button>
 			</div>

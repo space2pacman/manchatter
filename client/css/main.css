@@ -17,18 +17,6 @@
     margin: 0 1.5rem;
 }
 
-.navbar__caption {
-    background: none;
-    color: #000;
-}
-
-.navbar__caption:hover, .navbar__caption:active, .navbar__caption:focus {
-    box-shadow: none !important;
-    background: none !important;
-    color: #000 !important;
-    border-color: #007bff !important;
-}
-
 .navbar__button-close {
     cursor: pointer;
 }
@@ -55,6 +43,18 @@
     padding-left: 20px;
     margin-right: 5px;
     width: 175px;
+}
+
+.chat__window {
+    border-radius: .25rem .25rem 0 0;
+}
+
+.message__input {
+    border-radius: 0 0 .25rem .25rem;
+}
+
+.message__button {
+    border-radius: 0 0 .25rem 0;
 }
 
 .btn:focus,.btn:active {
