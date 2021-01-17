@@ -23,7 +23,7 @@
 						<i class="logo fas fa-comments"></i>
 						<input type="text" class="form-control mb-2" :class="{ 'is-invalid': $root.user.login.invalid }" placeholder="Login" v-model="$root.user.login.value">
 						<div class="invalid-feedback mb-2">{{ $root.translate($root.user.login.status) }}</div>
-						<button class="btn btn-primary btn-block" type="submit" @click.prevent="$root.auth" :disabled="$root.user.login.value.length >= $root.user.login.maxLoginLength">Enter</button>
+						<button class="btn btn-primary btn-block" type="submit" @click.prevent="$root.auth" :disabled="$root.user.login.value.length >= $root.user.login.maxLoginLength || $root.user.login.value.length === 0">Enter</button>
 					</div>
 				</div>
 			</div>
@@ -67,7 +67,7 @@
 				</button>
 			</div>
 
-			<b-modal id="room-add" title="Add room" :ok-disabled="room.name.length >= room.maxNameLength" @ok="onModalRoomAdd($event)">
+			<b-modal id="room-add" title="Add room" :ok-disabled="room.name.length >= room.maxNameLength || room.name.length === 0" @ok="onModalRoomAdd($event)">
 				<form @submit="onModalRoomAdd($event)">
 					<input type="text" class="form-control mb-3" :class="{ 'is-invalid': room.invalid }" placeholder="Room name" v-model="room.name">
 					<div class="btn-group btn-group-toggle d-flex">
