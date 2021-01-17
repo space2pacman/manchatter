@@ -54,6 +54,10 @@ app.post("/auth", (request, response) => {
 		payload.status = "failed";
 		payload.message = "login is empty";
 		response.status(403).send(payload);
+	} else if(login.length >= config.user.maxLoginLength) {
+		payload.status = "failed";
+		payload.message = "max login length exceeded";
+		response.status(403).send(payload);
 	} else if(users.find("login", login) === null) {
 		let user = users.add(login);
 
@@ -129,6 +133,9 @@ io.on("connection", socket => {
 		} else if(response.name.length === 0) {
 			payload.status = "failed";
 			payload.message = "name is empty";
+		} else if(response.name.length >= config.room.maxNameLength) {
+			payload.status = "failed";
+			payload.message = "max name length exceeded";
 		} else if(rooms.find("name", response.name) === null) {
 			payload.status = "success";
 			payload.data = {

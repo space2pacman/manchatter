@@ -73,7 +73,7 @@ class Rooms {
 	}
 
 	_init() {
-		config.rooms.default.forEach(room => {
+		config.room.default.forEach(room => {
 			this.add(room, "public", true);
 		})
 	}

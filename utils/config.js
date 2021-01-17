@@ -8,10 +8,12 @@ module.exports = {
 			origin: "*"
 		}
 	},
-	rooms: {
-		default: ["general", "test", "dev"]
+	room: {
+		default: ["general", "test", "dev"],
+		maxNameLength: 30
 	},
 	user: {
-		timeout: 30
+		timeout: 30,
+		maxLoginLength: 20
 	}
 }

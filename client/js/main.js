@@ -13,7 +13,8 @@ Vue.component("navbar", {
 				name: "",
 				text: "",
 				status: "public",
-				invalid: false
+				invalid: false,
+				maxNameLength: 30
 			}
 		}
 	},
@@ -167,7 +168,8 @@ let app = new Vue({
 			login: {
 				value: "",
 				status: "",
-				invalid: false
+				invalid: false,
+				maxLoginLength: 20
 			}
 		}
 	},
@@ -437,7 +439,9 @@ let app = new Vue({
 				"room already exists": "Комната с таким названием уже существует",
 				"name is empty": "Название должно состоять минимум из 1-ого символа",
 				"login is empty": "Имя пользователя должно состоять минимум из 1-ого символа",
-				"you are in the room": "Вы находитесь в комнате"
+				"you are in the room": "Вы находитесь в комнате",
+				"max login length exceeded": "Превышена максимальная длина логина",
+				"max name length exceeded": "Превышена максимальная длина имени"
 			}
 
 			return messages[message] ? messages[message] : message;
