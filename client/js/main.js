@@ -222,6 +222,9 @@ let app = new Vue({
 			this.room.messages = null;
 			this.room.online = null;
 			this.room.users = null;
+			this.rooms = null;
+			this.socket.close();
+			this.socket = null;
 			this.user.login.value = "";
 			this.clearLocalStorage();
 			this.setHash();
