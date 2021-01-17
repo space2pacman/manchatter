@@ -122,7 +122,7 @@
 		<form class="input-group" @submit.prevent="sendMessage">
 			<input type="text" class="form-control message__input" placeholder="Enter message" v-model="text" :disabled="$root.room.id === null">
 			<div class="input-group-append">
-				<button class="btn btn-primary message__button" type="button" @click="sendMessage">
+				<button class="btn btn-primary message__button" type="button" @click="sendMessage" :disabled="$root.room.id === null">
 					<i class="fas fa-paper-plane"></i>
 				</button>
 			</div>
