@@ -255,6 +255,10 @@ io.on("connection", socket => {
 		}
 	});
 
+	socket.on("disconnect", () => {
+		user.roomLeave(rooms.leave(user.id, user.roomId));
+	})
+
 	if(user) {
 		user.on("pulse:stop", () => {
 			if(user.roomId !== null) {
