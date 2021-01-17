@@ -114,7 +114,7 @@
 
 	<template id="users">
 		<div class="overflow-auto border-left users">
-			<div v-for="user in $root.room.users">{{ user }}</div>
+			<div v-for="user in $root.room.users" class="text-truncate">{{ user }}</div>
 		</div>
 	</template>
 
