@@ -242,6 +242,14 @@ io.on("connection", socket => {
 			});
 		}
 	});
+
+	socket.on("disconnect", () => {
+		if(user.roomId !== null) {
+			roomLeave(user);
+		}
+
+		users.remove(user.id);
+	})
 });
 
 function roomLeave(user) {
