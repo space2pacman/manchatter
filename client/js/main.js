@@ -209,6 +209,21 @@ let app = new Vue({
 			this.socket.on("room:joined", this.onRoomJoined);
 			this.socket.on("room:left", this.onRoomLeft);
 			this.socket.on("message:received", this.onMessageReceived);
+			this.socket.on("ping", this.onPing);
+		},
+		reset() {
+			this.isAuth = false;
+			this.user.id = null;
+			this.room.id = null;
+			this.room.name = null;
+			this.room.status = null;
+			this.room.messages = null;
+			this.room.online = null;
+			this.room.users = null;
+			this.user.login.value = "";
+			this.clearLocalStorage();
+			this.setHash();
+			this.stopUpdate();
 		},
 		roomJoin(roomId) {
 			let payload = {
@@ -262,22 +277,12 @@ let app = new Vue({
 
 			if(response.status === "failed") {
 				this.isAuth = false;
+				this.reset();
 			}
 		},
 		onLogout(response) {
 			if(response.status === "success") {
-				this.isAuth = false;
-				this.user.id = null;
-				this.room.id = null;
-				this.room.name = null;
-				this.room.status = null;
-				this.room.messages = null;
-				this.room.online = null;
-				this.room.users = null;
-				this.user.login.value = "";
-				this.clearLocalStorage();
-				this.setHash();
-				this.stopUpdate();
+				this.reset();
 			}
 
 			if(response.status === "failed") {
@@ -344,6 +349,9 @@ let app = new Vue({
 			if(response.status === "success") {
 				this.room.messages.push(response.data);
 			}
+		},
+		onPing() {
+			this.socket.emit("pong");
 		},
 		onHashChange(event) {
 			let chatId = window.location.hash.slice(1);

@@ -10,5 +10,8 @@ module.exports = {
 	},
 	rooms: {
 		default: ["general", "test", "dev"]
+	},
+	user: {
+		timeout: 30
 	}
 }

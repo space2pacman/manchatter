@@ -1,4 +1,4 @@
-let uuid = require("uuid");
+let User = require("./User");
 
 class Users {
 	constructor() {
@@ -6,12 +6,7 @@ class Users {
 	}
 
 	add(login) {
-		let user = {
-			id: uuid.v4(),
-			socket: null,
-			roomId: null,
-			login
-		}
+		let user = new User(login);
 
 		this._users.push(user);
 

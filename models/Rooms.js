@@ -1,6 +1,6 @@
-let uuid = require("uuid");
 let config = require("./../utils/config");
 let users = require("./Users");
+let Room = require("./Room");
 
 class Rooms {
 	constructor() {
@@ -8,14 +8,8 @@ class Rooms {
 		this._init();
 	}
 
-	add(name, status) {
-		let room = {
-			id: uuid.v4(),
-			name,
-			status: status || "public",
-			users: [],
-			messages: []
-		}
+	add(name, status, securited) {
+		let room = new Room(name, status, securited);
 
 		this._rooms[room.id] = room;
 
@@ -80,7 +74,7 @@ class Rooms {
 
 	_init() {
 		config.rooms.default.forEach(room => {
-			this.add(room);
+			this.add(room, "public", true);
 		})
 	}
 }

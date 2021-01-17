@@ -83,6 +83,9 @@ io.on("connection", socket => {
 	if(user) {
 		user.socket = socket;
 		payload.status = "success";
+		user.stopPulse();
+		user.hearbeat();
+		user.ping();
 	} else {
 		payload.status = "failed";
 	}
@@ -98,8 +101,10 @@ io.on("connection", socket => {
 		}
 
 		if(user.roomId !== null) {
-			roomLeave(user);
+			user.roomLeave(rooms.leave(user.id, user.roomId));
 		}
+
+		user.stopPulse();
 
 		if(users.remove(user.id)) {
 			payload.status = "success";
@@ -176,8 +181,8 @@ io.on("connection", socket => {
 			data: null
 		}
 
-		if(user.roomId !== null) {
-			roomLeave(user);
+		if(user && user.roomId !== null) {
+			user.roomLeave(rooms.leave(user.id, user.roomId));
 		}
 
 		if(room) {
@@ -243,31 +248,16 @@ io.on("connection", socket => {
 		}
 	});
 
-	socket.on("disconnect", () => {
-		if(user.roomId !== null) {
-			roomLeave(user);
-		}
+	if(user) {
+		user.on("pulse:stop", () => {
+			if(user.roomId !== null) {
+				user.roomLeave(rooms.leave(user.id, user.roomId));
+			}
 
-		users.remove(user.id);
-	})
+			user.stopPulse();
+			users.remove(user.id);
+		});
+	}
 });
-
-function roomLeave(user) {
-	let room = rooms.leave(user.id, user.roomId);
-	let payload = {
-		status: null,
-		message: null,
-		data: null
-	}
-
-	payload.status = "success";
-	payload.data = {
-		login: user.login
-	}
-
-	room.users.forEach(user => {
-		user.socket.emit("room:left", payload);
-	});
-}
 
 app.listen(config.port.http, () => console.log(`Server listen on port: ${config.port.http}`));
