@@ -95,6 +95,14 @@ Vue.component("messages", {
 			this.$nextTick(() => {
 				this.$refs["chat-messages"].scroll(0, this.$refs["chat-messages"].scrollHeight);
 			})
+		},
+		getDate(milliseconds) {
+			let date = new Date(milliseconds);
+			let hours = date.getHours().toString();
+			let minutes = date.getMinutes().toString();
+			let seconds = date.getSeconds().toString();
+			
+			return `${hours.length === 1 ? '0' + hours : hours}:${minutes.length === 1 ? '0' + minutes : minutes}:${seconds.length === 1 ? '0' + seconds : seconds}`;
 		}
 	},
 	watch: {

@@ -50,6 +50,7 @@ class Rooms {
 		let user = users.find("id", userId);
 		let data = {
 			login: user.login,
+			date: Date.now(),
 			text
 		}
 
