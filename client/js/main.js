@@ -167,7 +167,7 @@ let app = new Vue({
 			id: null,
 			state: null,
 			activity: null,
-			maxDowntime: 2,
+			maxDowntime: 60,
 			login: {
 				value: "",
 				status: "",
