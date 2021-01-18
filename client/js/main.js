@@ -165,7 +165,7 @@ let app = new Vue({
 		},
 		user: {
 			id: null,
-			state: "online",
+			state: null,
 			activity: null,
 			maxDowntime: 2,
 			login: {
@@ -275,7 +275,7 @@ let app = new Vue({
 				userId: this.user.id,
 				state: null
 			}
-			
+
 			if(downtime >= this.user.maxDowntime) {
 				this.user.state = "idle";
 			} else {
