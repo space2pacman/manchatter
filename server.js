@@ -85,8 +85,9 @@ io.on("connection", socket => {
 	}
 
 	if(user) {
-		user.socket = socket;
 		payload.status = "success";
+		user.socket = socket;
+		user.state = "online";
 		user.stopPulse();
 		user.hearbeat();
 		user.ping();
@@ -173,7 +174,7 @@ io.on("connection", socket => {
 		payload.status = "success";
 		payload.data = {
 			online: room.users.length,
-			users: room.users.map(user => user.login)
+			users: room.users.map(user => { return { state: user.state, login: user.login } })
 		}
 
 		socket.emit("room:refreshed", payload);
@@ -203,7 +204,7 @@ io.on("connection", socket => {
 				status: room.status,
 				messages: room.messages,
 				online: room.users.length,
-				users: room.users.map(user => user.login)
+				users: room.users.map(user => { return { state: user.state, login: user.login } })
 			}
 			room.users.forEach(user => {
 				user.socket.emit("room:joined", payload);
@@ -246,7 +247,7 @@ io.on("connection", socket => {
 			data: null
 		}
 
-		if(user.roomId) {
+		if(room) {
 			payload.status = "success";
 			payload.data = rooms.addMessage(user.id, user.roomId, response.text);
 			room.users.forEach(user => {
@@ -255,8 +256,27 @@ io.on("connection", socket => {
 		}
 	});
 
+	socket.on("user:update", response => {
+		let user = users.find("id", response.userId);
+		let room = rooms.find("id", user?.roomId);
+		let payload = {
+			status: null,
+			message: null,
+			data: null
+		}
+
+		if(room) {
+			payload.status = "success";
+			user.state = response.state;
+			room.users.forEach(user => {
+				user.socket.emit("user:updated", payload);
+			});
+		}
+
+	})
+
 	socket.on("disconnect", () => {
-		if(user.roomId) {
+		if(user && user.roomId) {
 			user.roomLeave(rooms.leave(user.id, user.roomId));
 		}
 	})

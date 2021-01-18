@@ -165,6 +165,9 @@ let app = new Vue({
 		},
 		user: {
 			id: null,
+			state: "online",
+			activity: null,
+			maxDowntime: 2,
 			login: {
 				value: "",
 				status: "",
@@ -204,10 +207,11 @@ let app = new Vue({
 
 		},
 		connect() {
-			this.socket = new io(`${this.api.socket.address}:${this.api.socket.port}`, {
+			let payload = {
 				query: `id=${this.user.id}`
-			});
+			}
 
+			this.socket = new io(`${this.api.socket.address}:${this.api.socket.port}`, payload);
 			this.socket.on("connected", this.onConnected);
 			this.socket.on("logout", this.onLogout);
 			this.socket.on("room:added", this.onRoomAdded);
@@ -216,6 +220,7 @@ let app = new Vue({
 			this.socket.on("room:joined", this.onRoomJoined);
 			this.socket.on("room:left", this.onRoomLeft);
 			this.socket.on("message:received", this.onMessageReceived);
+			this.socket.on("user:updated", this.onUserUpdated);
 			this.socket.on("ping", this.onPing);
 		},
 		reset() {
@@ -231,6 +236,7 @@ let app = new Vue({
 			this.socket.close();
 			this.socket = null;
 			this.user.login.value = "";
+			this.user.activity = null;
 			this.clearLocalStorage();
 			this.setHash();
 			this.stopUpdate();
@@ -252,9 +258,7 @@ let app = new Vue({
 			this.socket.emit("room:leave", payload);
 		},
 		roomUpdate() {
-			if(this.socket) {
-				this.socket.emit("room:update");
-			}
+			this.socket.emit("room:update");
 		},
 		roomRefresh() {
 			let payload = {
@@ -262,6 +266,24 @@ let app = new Vue({
 			}
 
 			this.socket.emit("room:refresh", payload);
+		},
+		userUpdate() {
+			let start = this.user.activity;
+			let end = Date.now();
+			let downtime = Math.floor((end - start) / 1000);
+			let payload = {
+				userId: this.user.id,
+				state: null
+			}
+			
+			if(downtime >= this.user.maxDowntime) {
+				this.user.state = "idle";
+			} else {
+				this.user.state = "online";
+			}
+
+			payload.state = this.user.state;
+			this.socket.emit("user:update", payload);
 		},
 		onAuth(response) {
 			if(response.status === "success") {
@@ -281,8 +303,10 @@ let app = new Vue({
 		onConnected(response) {
 			if(response.status === "success") {
 				this.isAuth = true;
+				this.user.activity = Date.now();
 				this.roomUpdate();
 				this.checkHash();
+				this.startUpdate();
 			}
 
 			if(response.status === "failed") {
@@ -360,6 +384,11 @@ let app = new Vue({
 				this.room.messages.push(response.data);
 			}
 		},
+		onUserUpdated(response) {
+			if(response.status === "success") {
+				this.roomRefresh();
+			}
+		},
 		onPing() {
 			this.socket.emit("pong");
 		},
@@ -370,6 +399,12 @@ let app = new Vue({
 				this.roomJoin(chatId);
 			}
 
+		},
+		onWindowClick() {
+			if(this.socket) {
+				this.user.activity = Date.now();
+				this.userUpdate();
+			}
 		},
 		onCheckUserId(response) {
 			if(response.status === "success") {
@@ -436,6 +471,7 @@ let app = new Vue({
 		startUpdate() {
 			this.timer = setInterval(() => {
 				this.roomUpdate();
+				this.userUpdate();
 			}, 1000);
 		},
 		stopUpdate() {
@@ -456,8 +492,8 @@ let app = new Vue({
 		}
 	},
 	mounted() {
-		this.startUpdate();
 		this.checkUserId();
 		window.addEventListener("hashchange", this.onHashChange);
+		window.addEventListener("click", this.onWindowClick);
 	}
 })

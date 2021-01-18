@@ -10,6 +10,7 @@ class User extends EventEmitter {
 		this.socket = null;
 		this.roomId = null;
 		this.pulse = null;
+		this.state = null;
 		this._start = 0;
 		this._end = 0;
 		this._SECOND = 1000;
