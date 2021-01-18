@@ -304,6 +304,7 @@ let app = new Vue({
 			if(response.status === "success") {
 				this.isAuth = true;
 				this.user.activity = Date.now();
+				this.user.state = "online";
 				this.roomUpdate();
 				this.checkHash();
 				this.startUpdate();
@@ -400,7 +401,7 @@ let app = new Vue({
 			}
 
 		},
-		onWindowClick() {
+		onWindowActivity() {
 			if(this.socket) {
 				this.user.activity = Date.now();
 				this.userUpdate();
@@ -494,6 +495,7 @@ let app = new Vue({
 	mounted() {
 		this.checkUserId();
 		window.addEventListener("hashchange", this.onHashChange);
-		window.addEventListener("click", this.onWindowClick);
+		window.addEventListener("click", this.onWindowActivity);
+		window.addEventListener("keydown", this.onWindowActivity);
 	}
 })

@@ -45,6 +45,21 @@
     width: 175px;
 }
 
+.user__state {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.user__state--online {
+    background-color: #28a745;
+}
+
+.user__state--idle {
+    background-color: #ffc107;
+}
+
 .chat__window {
     border-radius: .25rem .25rem 0 0;
 }

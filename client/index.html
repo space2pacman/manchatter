@@ -58,7 +58,10 @@
 			</div>
 			<div v-else></div>
 			<div>
-				<span class="text-secondary mr-3">{{ $root.user.login.value }}</span>
+				<span class="text-secondary mr-3">
+					<div class="user__state mr-1" :class="'user__state--' + $root.user.state"></div>
+					{{ $root.user.login.value }}
+				</span>
 				<button type="button" class="btn btn-secondary btn-sm mr-2" title="add room" :disabled="$root.room.id !== null" @click="roomAdd">
 					<i class="fas fa-plus-square"></i>
 				</button>
@@ -114,7 +117,10 @@
 
 	<template id="users">
 		<div class="overflow-auto border-left users">
-			<div v-for="user in $root.room.users" class="text-truncate">{{ user.state }}: {{ user.login }}</div>
+			<div v-for="user in $root.room.users" class="text-truncate">
+				<div class="user__state mr-1" :class="'user__state--' + user.state"></div>
+				{{ user.login }}
+			</div>
 		</div>
 	</template>
 
