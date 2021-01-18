@@ -278,6 +278,7 @@ io.on("connection", socket => {
 	socket.on("disconnect", () => {
 		if(user && user.roomId) {
 			user.roomLeave(rooms.leave(user.id, user.roomId));
+			user.removeAllListeners("pulse:stop");
 		}
 	})
 
