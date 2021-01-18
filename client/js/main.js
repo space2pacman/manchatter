@@ -173,6 +173,12 @@ let app = new Vue({
 			}
 		}
 	},
+	watch: {
+		"user.login.value"() {
+			console.log("123")
+			this.user.login.invalid = false;
+		}
+	},
 	methods: {
 		request(url, data) {
 			return fetch(`${this.api.http.address}:${this.api.http.port}/${url}`, {
