@@ -249,7 +249,7 @@ io.on("connection", socket => {
 
 		if(room) {
 			let lastMessage = room.getLastMessage(user.id);
-			let DELAY = 1000;
+			let DELAY = config.room.message.delay * 1000;
 	
 			if((lastMessage && (Date.now() - lastMessage.date) > DELAY) || lastMessage === null) {
 				payload.status = "success";

@@ -10,7 +10,10 @@ module.exports = {
 	},
 	room: {
 		default: ["general", "test", "dev"],
-		maxNameLength: 30
+		maxNameLength: 30,
+		message: {
+			delay: 1
+		}
 	},
 	user: {
 		timeout: 30,
