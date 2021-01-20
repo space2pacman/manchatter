@@ -9,28 +9,36 @@ class User extends EventEmitter {
 		this.login = login;
 		this.socket = null;
 		this.roomId = null;
-		this.pulse = null;
 		this.state = null;
+		this.isTyping = false;
 		this._start = 0;
 		this._end = 0;
+		this._ping = null;
+		this._pulse = null;
 		this._SECOND = 1000;
 		this._latency;
 		this._timeout = config.user.timeout;
 	}
 
+	reset() {
+		this.state = "online";
+		this.isTyping = false;
+	}
+
 	stopPulse() {
-		clearInterval(this.pulse);
+		clearInterval(this._pulse);
+		clearTimeout(this._ping);
 	}
 
 	ping() {
-		setTimeout(() => {
+		this._ping = setTimeout(() => {
 			this.socket.emit("ping");
 		}, 1000);
 	}
 
 	hearbeat(callback) {
 		this.socket.on("pong", this.onPong.bind(this));
-		this.pulse = setInterval(this.onPulse.bind(this), 1000);
+		this._pulse = setInterval(this.onPulse.bind(this), 1000);
 	}
 
 	roomLeave(room) {

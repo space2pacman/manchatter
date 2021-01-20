@@ -122,7 +122,8 @@
 		<div class="overflow-auto border-left users">
 			<div v-for="user in $root.room.users" class="text-truncate">
 				<div class="user__state mr-1" :class="'user__state--' + user.state"></div>
-				{{ user.login }}
+				<span>{{ user.login }}</span>
+				<span>{{ user.isTyping }}</span>
 			</div>
 		</div>
 	</template>

@@ -103,6 +103,11 @@ Vue.component("messages", {
 			let seconds = date.getSeconds().toString();
 			
 			return `${hours.length === 1 ? '0' + hours : hours}:${minutes.length === 1 ? '0' + minutes : minutes}:${seconds.length === 1 ? '0' + seconds : seconds}`;
+		},
+		onMessageReceived(response) {
+			if(response.status === "success") {
+				this.scroll();
+			}
 		}
 	},
 	watch: {
@@ -111,11 +116,7 @@ Vue.component("messages", {
 		}
 	},
 	mounted() {
-		this.$root.socket.on("message:received", response => {
-			if(response.status === "success") {
-				this.scroll();
-			}
-		})
+		this.$root.socket.on("message:received", this.onMessageReceived);
 	},
 	template: "#messages"
 });
@@ -127,7 +128,36 @@ Vue.component("users", {
 Vue.component("message", {
 	data() {
 		return {
-			text: ""
+			text: "",
+			typing: {
+				start: false,
+				end: null
+			}
+		}
+	},
+	watch: {
+		text(value) {
+			if(value.length > 0) {
+				clearTimeout(this.typing.end);
+
+				if(!this.typing.start) {
+					let payload = {
+						userId: this.$root.user.id
+					}
+
+					this.typing.start = true;
+					this.$root.socket.emit("message:typing", payload);
+				}
+
+				this.typing.end = setTimeout(() => {
+					let payload = {
+						userId: this.$root.user.id
+					}
+
+					this.typing.start = false;
+					this.$root.socket.emit("message:typed", payload);
+				}, 5000);
+			}
 		}
 	},
 	methods: {
@@ -139,15 +169,33 @@ Vue.component("message", {
 
 			if(payload.text.length > 0) {
 				this.$root.socket.emit("message:send", payload);
+				this.stopTrackingTyping();
+			}
+		},
+		stopTrackingTyping() {
+			let payload = {
+				userId: this.$root.user.id
+			}
+
+			clearTimeout(this.typing.end);
+
+			this.typing.start = false;
+			this.$root.socket.emit("message:typed", payload);
+		},
+		onMessageReceived(response) {
+			if(response.status === "success") {
+				this.text = "";
+			}
+		},
+		onRoomLeft(response) {
+			if(response.status === "success") {
+				this.text = "";
 			}
 		}
 	},
 	mounted() {
-		this.$root.socket.on("message:received", response => {
-			if(response.status === "success") {
-				this.text = "";
-			}
-		})
+		this.$root.socket.on("message:received", this.onMessageReceived);
+		this.$root.socket.on("room:left", this.onRoomLeft);
 	},
 	template: "#message"
 });
