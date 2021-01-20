@@ -284,6 +284,7 @@ let app = new Vue({
 			this.socket.on("message:received", this.onMessageReceived);
 			this.socket.on("user:updated", this.onUserUpdated);
 			this.socket.on("ping", this.onPing);
+			this.socket.on("disconnect", this.onDisconnect);
 		},
 		reset() {
 			this.isAuth = false;
@@ -454,6 +455,9 @@ let app = new Vue({
 		},
 		onPing() {
 			this.socket.emit("pong");
+		},
+		onDisconnect() {
+			this.reset();
 		},
 		onHashChange(event) {
 			let chatId = window.location.hash.slice(1);
