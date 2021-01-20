@@ -76,3 +76,29 @@
     outline: none !important;
     box-shadow: none !important;
 }
+
+.is-typing {
+    transform: translateX(0px);
+    font-size: 12px;
+    position: relative;
+    top: -2px;
+    animation: is-typing 1s infinite;
+}
+
+@keyframes is-typing {
+    0% {
+        transform: translateX(0px);
+    }
+
+    33% {
+        transform: translateX(2px);
+    }
+
+    66% {
+        transform: translateX(4px);
+    }
+
+    100% {
+        transform: translateX(6px);
+    }
+}

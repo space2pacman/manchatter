@@ -123,7 +123,7 @@
 			<div v-for="user in $root.room.users" class="text-truncate">
 				<div class="user__state mr-1" :class="'user__state--' + user.state"></div>
 				<span>{{ user.login }}</span>
-				<span>{{ user.isTyping }}</span>
+				<i v-if="user.isTyping" class="fas fa-pencil-alt is-typing"></i>
 			</div>
 		</div>
 	</template>
