@@ -46,19 +46,6 @@ class Rooms {
 		return this._rooms[roomId];
 	}
 
-	addMessage(userId, roomId, text) {
-		let user = users.find("id", userId);
-		let data = {
-			login: user.login,
-			date: Date.now(),
-			text
-		}
-
-		this._rooms[roomId].messages.push(data);
-
-		return this._rooms[roomId].messages[this._rooms[roomId].messages.length - 1];
-	}
-
 	getAll(status) {
 		let rooms = [];
 

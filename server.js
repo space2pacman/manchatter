@@ -248,11 +248,16 @@ io.on("connection", socket => {
 		}
 
 		if(room) {
-			payload.status = "success";
-			payload.data = rooms.addMessage(user.id, user.roomId, response.text);
-			room.users.forEach(user => {
-				user.socket.emit("message:received", payload);
-			});
+			let lastMessage = room.getLastMessage(user.id);
+			let SECOND = 1000;
+	
+			if((lastMessage && (Date.now() - lastMessage.date) > SECOND) || lastMessage === null) {
+				payload.status = "success";
+				payload.data = room.addMessage(user.id, response.text);
+				room.users.forEach(user => {
+					user.socket.emit("message:received", payload);
+				});
+			}
 		}
 	});
 

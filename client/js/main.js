@@ -138,10 +138,16 @@ Vue.component("message", {
 			}
 
 			if(payload.text.length > 0) {
-				this.text = "";
 				this.$root.socket.emit("message:send", payload);
 			}
 		}
+	},
+	mounted() {
+		this.$root.socket.on("message:received", response => {
+			if(response.status === "success") {
+				this.text = "";
+			}
+		})
 	},
 	template: "#message"
 });
