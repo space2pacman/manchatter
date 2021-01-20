@@ -1,4 +1,4 @@
-# pacman-chat
+# Manchatter
 
 WebSocket chat with rooms
 
