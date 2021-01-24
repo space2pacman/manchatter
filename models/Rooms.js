@@ -6,7 +6,6 @@ let Room = require("./Room");
 class Rooms {
 	constructor() {
 		this._rooms = {};
-		this._emitter = new EventEmitter();
 		this._init();
 	}
 
