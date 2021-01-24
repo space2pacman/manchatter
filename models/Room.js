@@ -1,14 +1,20 @@
 let uuid = require("uuid");
+let EventEmitter = require("events");
 let users = require("./Users");
+let config = require("./../utils/config");
 
-class Room {
+class Room extends EventEmitter {
 	constructor(name, status, securited) {
+		super();
 		this.id = uuid.v4();
 		this.name = name;
 		this.status = status || "public";
 		this.securited = securited || false;
 		this.users = [];
 		this.messages = [];
+		this._lastTimeOnline = 0;
+		this._timer = null;
+		this._init();
 	}
 
 	addMessage(userId, text) {
@@ -37,6 +43,29 @@ class Room {
 		}
 
 		return message || null;
+	}
+
+	_init() {
+		if(!this.securited) {
+			let timer = setInterval(() => {
+				if(this.users.length === 0) {
+					if(this._lastTimeOnline === 0) {
+						this._lastTimeOnline = Date.now();
+					}
+				} else {
+					this._lastTimeOnline = 0;
+				}
+
+				if(this._lastTimeOnline > 0 && ((Date.now() - this._lastTimeOnline) / 1000) > config.room.timeout) {
+					let payload = {
+						roomId: this.id
+					}
+
+					this.emit("room:remove", payload);
+					clearInterval(timer);
+				}
+			}, 1000)
+		}
 	}
 }
 

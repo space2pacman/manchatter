@@ -11,6 +11,7 @@ module.exports = {
 	room: {
 		default: ["general", "test", "dev"],
 		maxNameLength: 30,
+		timeout: 300,
 		message: {
 			delay: 1
 		}
